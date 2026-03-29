@@ -1,0 +1,10 @@
+n = int(input())
+A = input().strip()
+B = input().strip()
+
+result = []
+for i in range(n):
+    result.append(A[i])
+    result.append(B[i])
+
+print(''.join(result))
