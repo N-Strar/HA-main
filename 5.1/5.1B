@@ -1,0 +1,33 @@
+n, m = map(int, input().split())
+grid = [list(input().strip()) for _ in range(n)]
+
+r, c = map(int, input().split())
+r -= 1
+c -= 1
+
+q = int(input())
+commands = input().strip()
+
+# visited: множество посещённых клеток
+visited = set()
+visited.add((r, c))
+
+# направления: 0 - вверх, 1 - вправо, 2 - вниз, 3 - влево
+dr = [-1, 0, 1, 0]
+dc = [0, 1, 0, -1]
+direction = 0  # начинаем с "вверх"
+
+for cmd in commands:
+    if cmd == 'L':
+        direction = (direction - 1) % 4
+    elif cmd == 'R':
+        direction = (direction + 1) % 4
+    elif cmd == 'M':
+        nr = r + dr[direction]
+        nc = c + dc[direction]
+        # проверяем, можно ли сделать шаг
+        if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] == '.':
+            r, c = nr, nc
+            visited.add((r, c))
+
+print(len(visited))
