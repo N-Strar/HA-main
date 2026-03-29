@@ -1,0 +1,20 @@
+def fib_last_digit(k):
+    """Возвращает последнюю цифру F_k"""
+    if k <= 1:
+        return k
+    a, b = 0, 1
+    for _ in range(2, k + 1):
+        a, b = b, (a + b) % 10
+    return b
+
+m, n = map(int, input().split())
+
+period = 60
+a = (n + 2) % period
+b = (m + 1) % period
+
+Fn2_last = fib_last_digit(a)
+Fm1_last = fib_last_digit(b)
+
+result = (Fn2_last - Fm1_last) % 10
+print(result)
