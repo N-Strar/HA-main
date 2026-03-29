@@ -1,0 +1,90 @@
+from collections import deque
+
+def solve():
+    n, m = map(int, input().split())
+    grid = [list(input().strip()) for _ in range(n)]
+
+    # Находим координаты S, F, K, D
+    S = F = K = D = None
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'S':
+                S = (i, j)
+            elif grid[i][j] == 'F':
+                F = (i, j)
+            elif grid[i][j] == 'K':
+                K = (i, j)
+            elif grid[i][j] == 'D':
+                D = (i, j)
+
+    # BFS: состояние (x, y, has_key)
+    # dist[x][y][has_key] = длина пути
+    # parent[x][y][has_key] = (prev_x, prev_y, prev_has_key, action)
+    INF = -1
+    dist = [[[-1, -1] for _ in range(m)] for _ in range(n)]
+    parent = [[[None, None] for _ in range(m)] for _ in range(n)]
+    q = deque()
+    sx, sy = S
+    dist[sx][sy][0] = 0
+    q.append((sx, sy, 0))
+
+    # направления
+    dirs = [(-1, 0, 'U'), (1, 0, 'D'), (0, 1, 'R'), (0, -1, 'L')]
+
+    while q:
+        x, y, key = q.popleft()
+        # Если достигли выхода
+        if (x, y) == F:
+            break
+
+        # 1) Движения в соседние клетки
+        for dx, dy, act in dirs:
+            nx, ny = x + dx, y + dy
+            if not (0 <= nx < n and 0 <= ny < m):
+                continue
+            cell = grid[nx][ny]
+            if cell == '#':
+                continue
+            # Нельзя заходить на дверь без ключа
+            if cell == 'D' and key == 0:
+                continue
+            new_key = key
+            # Если наступили на ключ, состояние не меняется (ключ можно подобрать отдельно)
+            # Если клетка K, то можно потом подобрать ключ, но сейчас просто проходим
+            if dist[nx][ny][new_key] == -1:
+                dist[nx][ny][new_key] = dist[x][y][key] + 1
+                parent[nx][ny][new_key] = (x, y, key, act)
+                q.append((nx, ny, new_key))
+
+        # 2) Действие P: подобрать ключ (только если стоим на K и ключа ещё нет)
+        if (x, y) == K and key == 0:
+            if dist[x][y][1] == -1:
+                dist[x][y][1] = dist[x][y][0] + 1
+                parent[x][y][1] = (x, y, 0, 'P')
+                q.append((x, y, 1))
+
+    # Проверяем, достигли ли выхода в каком-либо состоянии
+    fx, fy = F
+    best_key = -1
+    for k in (0, 1):
+        if dist[fx][fy][k] != -1:
+            if best_key == -1 or dist[fx][fy][k] < dist[fx][fy][best_key]:
+                best_key = k
+    if best_key == -1:
+        print(-1)
+        return
+
+    # Восстановление пути
+    path = []
+    x, y, key = fx, fy, best_key
+    while (x, y, key) != (sx, sy, 0):
+        px, py, pkey, act = parent[x][y][key]
+        path.append(act)
+        x, y, key = px, py, pkey
+    path.reverse()
+
+    print(dist[fx][fy][best_key])
+    print(''.join(path))
+
+if __name__ == "__main__":
+    solve()
