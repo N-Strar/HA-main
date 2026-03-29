@@ -1,0 +1,7 @@
+A = input().strip()
+B = input().strip()
+
+# Переводим в int, суммируем, переводим обратно в bin
+result = bin(int(A, 2) + int(B, 2))[2:]
+
+print(result)
