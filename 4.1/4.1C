@@ -1,0 +1,29 @@
+def fib_mod(n, m):
+    if n <= 1:
+        return n % m
+    
+    # Находим период Пизано
+    prev, curr = 0, 1
+    period = 0
+    
+    for i in range(m * m + 1):
+        prev, curr = curr, (prev + curr) % m
+        if prev == 0 and curr == 1:
+            period = i + 1
+            break
+    
+    # Уменьшаем n по модулю периода
+    n = n % period
+    
+    # Вычисляем F_n mod m
+    if n <= 1:
+        return n % m
+    
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, (a + b) % m
+    return b
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    print(fib_mod(n, m))
