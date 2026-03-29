@@ -1,0 +1,44 @@
+import sys
+sys.setrecursionlimit(300000)
+
+def solve():
+    n, m = map(int, sys.stdin.readline().split())
+    graph = [[] for _ in range(n)]
+    for _ in range(m):
+        u, v = map(int, sys.stdin.readline().split())
+        u -= 1
+        v -= 1
+        graph[u].append(v)
+        graph[v].append(u)
+
+    visited = [False] * n
+    components = []
+
+    for i in range(n):
+        if not visited[i]:
+            stack = [i]
+            visited[i] = True
+            comp = [i]
+            while stack:
+                u = stack.pop()
+                for v in graph[u]:
+                    if not visited[v]:
+                        visited[v] = True
+                        stack.append(v)
+                        comp.append(v)
+            components.append(comp)
+
+    c = len(components)
+    if c == 1:
+        print(0)
+        return
+
+    print(c - 1)
+    # Соединяем компоненты: берём по одной вершине из каждой
+    for i in range(c - 1):
+        u = components[i][0] + 1
+        v = components[i + 1][0] + 1
+        print(u, v)
+
+if __name__ == "__main__":
+    solve()
