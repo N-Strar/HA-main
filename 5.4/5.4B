@@ -1,0 +1,39 @@
+import sys
+sys.setrecursionlimit(10000)
+
+def solve():
+    n, m = map(int, sys.stdin.readline().split())
+    graph = [[] for _ in range(n)]
+    for _ in range(m):
+        u, v = map(int, sys.stdin.readline().split())
+        u -= 1
+        v -= 1
+        graph[u].append(v)
+        graph[v].append(u)
+
+    visited = [False] * n
+    components = 0
+    max_size = 0
+
+    for i in range(n):
+        if not visited[i]:
+            # BFS или DFS для поиска компоненты
+            stack = [i]
+            visited[i] = True
+            size = 0
+            while stack:
+                u = stack.pop()
+                size += 1
+                for v in graph[u]:
+                    if not visited[v]:
+                        visited[v] = True
+                        stack.append(v)
+            components += 1
+            if size > max_size:
+                max_size = size
+
+    print(components)
+    print(max_size)
+
+if __name__ == "__main__":
+    solve()
