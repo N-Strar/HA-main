@@ -1,1 +1,49 @@
+from collections import deque, defaultdict
 
+def solve():
+    n, m = map(int, input().split())
+    
+    graph = defaultdict(list)
+    indeg = [0] * (n + 1)
+    
+    # Строим граф
+    for _ in range(m):
+        u, v, t = map(int, input().split())
+        if t == 1:  # u победил v
+            graph[u].append(v)
+            indeg[v] += 1
+        else:  # v победил u
+            graph[v].append(u)
+            indeg[u] += 1
+    
+    # Топологическая сортировка (алгоритм Кана)
+    q = deque()
+    for i in range(1, n + 1):
+        if indeg[i] == 0:
+            q.append(i)
+    
+    # Если изначально нет вершин с indeg=0 (цикл)
+    if len(q) != 1:
+        print("NO")
+        return
+    
+    result = []
+    while q:
+        if len(q) > 1:
+            print("NO")
+            return
+        u = q.popleft()
+        result.append(u)
+        for v in graph[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)
+    
+    # Если не все вершины обработаны (цикл)
+    if len(result) != n:
+        print("NO")
+    else:
+        print("YES")
+
+if __name__ == "__main__":
+    solve()
