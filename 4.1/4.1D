@@ -1,0 +1,22 @@
+n = int(input())
+
+# Период Пизано для m = 10 равен 60
+period = 60
+
+# Уменьшаем n+2 по модулю периода
+n = (n + 2) % period
+
+# Вычисляем F_n mod 10
+if n == 0:
+    fib = 0
+elif n == 1:
+    fib = 1
+else:
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, (a + b) % 10
+    fib = b
+
+# F_0 + ... + F_n = F_{n+2} - 1
+result = (fib - 1) % 10
+print(result)
