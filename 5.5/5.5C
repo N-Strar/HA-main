@@ -1,0 +1,47 @@
+import sys
+import heapq
+
+def solve():
+    input = sys.stdin.readline
+    n, m, q = map(int, input().split())
+    graph = [[] for _ in range(n)]
+    for _ in range(m):
+        u, v, w = map(int, input().split())
+        u -= 1
+        v -= 1
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+
+    INF = 10**18
+    # dist[i][j] — расстояние от i до j
+    dist = [[INF] * n for _ in range(n)]
+
+    for s in range(n):
+        d = dist[s]
+        d[s] = 0
+        pq = [(0, s)]
+        while pq:
+            cur_d, u = heapq.heappop(pq)
+            if cur_d != d[u]:
+                continue
+            for v, w in graph[u]:
+                nd = cur_d + w
+                if nd < d[v]:
+                    d[v] = nd
+                    heapq.heappush(pq, (nd, v))
+
+    out_lines = []
+    for _ in range(q):
+        x, y = map(int, input().split())
+        x -= 1
+        y -= 1
+        ans = dist[x][y]
+        if ans == INF:
+            out_lines.append("-1")
+        else:
+            out_lines.append(str(ans))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
