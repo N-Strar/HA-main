@@ -1,0 +1,83 @@
+import sys
+import heapq
+from itertools import permutations
+
+def solve():
+    input = sys.stdin.readline
+    n, m, V, O1, O2, O3 = map(int, input().split())
+    vertices = [V, O1, O2, O3]
+    idx_of = {v: i for i, v in enumerate(vertices)}
+
+    graph = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        u, v, w = map(int, input().split())
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+
+    # Дейкстра из каждой из 4 вершин, запоминаем предков
+    INF = 10**18
+    dist = [[INF] * (n + 1) for _ in range(4)]
+    prev = [[-1] * (n + 1) for _ in range(4)]  # для восстановления пути
+
+    for i, start in enumerate(vertices):
+        d = dist[i]
+        p = prev[i]
+        d[start] = 0
+        pq = [(0, start)]
+        while pq:
+            cur_d, u = heapq.heappop(pq)
+            if cur_d != d[u]:
+                continue
+            for v, w in graph[u]:
+                nd = cur_d + w
+                if nd < d[v]:
+                    d[v] = nd
+                    p[v] = u
+                    heapq.heappush(pq, (nd, v))
+
+    # Матрица расстояний между вершинами
+    D = [[0] * 4 for _ in range(4)]
+    for i in range(4):
+        for j in range(4):
+            D[i][j] = dist[i][vertices[j]]
+
+    # Перебор порядка
+    orders = list(permutations([1, 2, 3]))
+    best_len = INF
+    best_order = None
+    for order in orders:
+        p1, p2, p3 = order
+        length = D[0][p1] + D[p1][p2] + D[p2][p3] + D[p3][0]
+        if length < best_len:
+            best_len = length
+            best_order = (p1, p2, p3)
+
+    # Восстановление полного пути
+    def get_path(a_idx, b_idx):
+        """восстанавливает путь между вершинами a и b (по индексам в vertices)"""
+        start = vertices[a_idx]
+        end = vertices[b_idx]
+        path = []
+        cur = end
+        while cur != start:
+            path.append(cur)
+            cur = prev[a_idx][cur]
+        path.append(start)
+        path.reverse()
+        return path
+
+    full_path = []
+    # V -> p1
+    full_path += get_path(0, best_order[0])[:-1]
+    # p1 -> p2
+    full_path += get_path(best_order[0], best_order[1])[:-1]
+    # p2 -> p3
+    full_path += get_path(best_order[1], best_order[2])[:-1]
+    # p3 -> V
+    full_path += get_path(best_order[2], 0)
+
+    print(len(full_path))
+    print(' '.join(map(str, full_path)))
+
+if __name__ == "__main__":
+    solve()
