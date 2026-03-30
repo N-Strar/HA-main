@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+#include <deque>
+#include <climits>
+#include <cstring>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    
+    vector<string> grid(n);
+    int Sx, Sy, Fx, Fy;
+    
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == 'S') {
+                Sx = i; Sy = j;
+            } else if (grid[i][j] == 'F') {
+                Fx = i; Fy = j;
+            }
+        }
+    }
+    
+    const int dx[4] = {-1, 0, 1, 0};
+    const int dy[4] = {0, 1, 0, -1};
+    const int INF = 1e9;
+    
+    // Одномерный массив dist[n*m*4]
+    int size = n * m * 4;
+    vector<int> dist(size, INF);
+    
+    auto idx = [&](int x, int y, int d) {
+        return (x * m + y) * 4 + d;
+    };
+    
+    deque<tuple<int, int, int>> dq;
+    
+    for (int d = 0; d < 4; d++) {
+        dist[idx(Sx, Sy, d)] = 0;
+        dq.emplace_back(Sx, Sy, d);
+    }
+    
+    while (!dq.empty()) {
+        auto [x, y, d] = dq.front();
+        dq.pop_front();
+        int cur = dist[idx(x, y, d)];
+        
+        // Движение прямо
+        int nx = x + dx[d];
+        int ny = y + dy[d];
+        if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] != '#') {
+            int pos = idx(nx, ny, d);
+            if (dist[pos] > cur) {
+                dist[pos] = cur;
+                dq.emplace_front(nx, ny, d);
+            }
+        }
+        
+        // Повороты
+        for (int nd = 0; nd < 4; nd++) {
+            if (nd == d) continue;
+            nx = x + dx[nd];
+            ny = y + dy[nd];
+            if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] != '#') {
+                int pos = idx(nx, ny, nd);
+                if (dist[pos] > cur + 1) {
+                    dist[pos] = cur + 1;
+                    dq.emplace_back(nx, ny, nd);
+                }
+            }
+        }
+    }
+    
+    int ans = INF;
+    for (int d = 0; d < 4; d++) {
+        ans = min(ans, dist[idx(Fx, Fy, d)]);
+    }
+    
+    cout << (ans != INF ? ans : -1) << endl;
+    
+    return 0;
+}
