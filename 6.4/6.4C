@@ -1,0 +1,4 @@
+a, b, K = map(int, input().split())
+mod = 10 ** K
+res = pow(a, b, mod)
+print(str(res).zfill(K))
