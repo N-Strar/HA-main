@@ -1,20 +1,40 @@
 import sys
+import random
 
-def partition(arr, low, high):
-    pivot = arr[high]
-    i = low - 1
-    for j in range(low, high):
+def insertion_sort(arr, left, right):
+    for i in range(left + 1, right + 1):
+        key = arr[i]
+        j = i - 1
+        while j >= left and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+def partition(arr, left, right, pivot_idx):
+    pivot = arr[pivot_idx]
+    arr[pivot_idx], arr[right] = arr[right], arr[pivot_idx]
+    i = left
+    for j in range(left, right):
         if arr[j] <= pivot:
-            i += 1
             arr[i], arr[j] = arr[j], arr[i]
-    arr[i + 1], arr[high] = arr[high], arr[i + 1]
-    return i + 1
+            i += 1
+    arr[i], arr[right] = arr[right], arr[i]
+    return i
 
-def quicksort(arr, low, high):
-    if low < high:
-        pi = partition(arr, low, high)
-        quicksort(arr, low, pi - 1)
-        quicksort(arr, pi + 1, high)
+def quicksort(arr):
+    n = len(arr)
+    stack = [(0, n - 1)]
+    while stack:
+        left, right = stack.pop()
+        if right - left <= 16:
+            insertion_sort(arr, left, right)
+            continue
+        pivot_idx = random.randint(left, right)
+        pivot_pos = partition(arr, left, right, pivot_idx)
+        if pivot_pos - 1 > left:
+            stack.append((left, pivot_pos - 1))
+        if pivot_pos + 1 < right:
+            stack.append((pivot_pos + 1, right))
 
 def main():
     data = sys.stdin.buffer.read().split()
@@ -22,7 +42,7 @@ def main():
         return
     n = int(data[0])
     arr = list(map(int, data[1:1 + n]))
-    quicksort(arr, 0, n - 1)
+    quicksort(arr)
     sys.stdout.write(' '.join(map(str, arr)))
 
 if __name__ == "__main__":
