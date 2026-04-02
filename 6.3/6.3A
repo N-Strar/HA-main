@@ -1,0 +1,16 @@
+def win(a, b):
+    if a == 0 and b == 0:
+        return False
+    # взять один из первого набора
+    if a > 0 and not win(a - 1, b):
+        return True
+    # взять один из второго набора
+    if b > 0 and not win(a, b - 1):
+        return True
+    # взять по одному из обоих
+    if a > 0 and b > 0 and not win(a - 1, b - 1):
+        return True
+    return False
+
+n, m = map(int, input().split())
+print("Win" if win(n, m) else "Lose")
