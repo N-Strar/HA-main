@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+#include <functional>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<pair<int, int>> coins(n);
+    for (int i = 0; i < n; i++) {
+        cin >> coins[i].first >> coins[i].second;
+    }
+    long long S;
+    cin >> S;
+    sort(coins.begin(), coins.end(), greater<>());
+
+    long long ans = LLONG_MAX;
+
+    function<void(int, long long, long long)> dfs = [&](int idx, long long remaining, long long count) {
+        if (remaining == 0) {
+            if (count < ans) ans = count;
+            return;
+        }
+        if (idx == n) return;
+        if (count >= ans) return;
+        long long val = coins[idx].first;
+        long long limit = coins[idx].second;
+        long long max_use = (limit == -1) ? remaining / val : min(limit, remaining / val);
+        for (long long use = max_use; use >= 0; use--) {
+            if (count + use >= ans) break;
+            dfs(idx + 1, remaining - use * val, count + use);
+        }
+    };
+
+    dfs(0, S, 0);
+    if (ans == LLONG_MAX) cout << -1 << endl;
+    else cout << ans << endl;
+    return 0;
+}
