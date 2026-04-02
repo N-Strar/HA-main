@@ -1,0 +1,45 @@
+import sys
+import heapq
+
+def solve() -> None:
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        return
+    it = iter(data)
+    n = int(next(it))
+    L = int(next(it))
+    F = int(next(it))
+
+    stations = []
+    for _ in range(n):
+        x = int(next(it))
+        a = int(next(it))
+        stations.append((x, a))
+
+    # Добавляем финиш как заправку с нулевым топливом
+    stations.append((L, 0))
+    stations.sort()                 # сортируем по координате
+
+    fuel = F                        # текущий запас топлива
+    heap = []                       # max-heap (храним отрицательные значения)
+    prev = 0                        # предыдущая координата
+    ans = 0                         # количество заправок
+
+    for x, a in stations:
+        need = x - prev             # расстояние до следующей точки
+        # Если не хватает топлива, берём из heap
+        while heap and fuel < need:
+            fuel += -heapq.heappop(heap)
+            ans += 1
+        if fuel < need:             # всё равно не хватает
+            print(-1)
+            return
+        fuel -= need                # расходуем топливо
+        if a > 0:
+            heapq.heappush(heap, -a)   # добавляем топливо заправки в кучу
+        prev = x
+
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
