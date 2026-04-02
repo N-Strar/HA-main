@@ -1,0 +1,27 @@
+MOD = 1_000_000_007
+
+def fib(n: int) -> int:
+    """Возвращает n-е число Фибоначчи (F0 = 0, F1 = 1) по модулю MOD."""
+    if n == 0:
+        return 0
+    def _fib(k: int):
+        if k == 0:
+            return (0, 1)
+        a, b = _fib(k >> 1)
+        c = (a * ((b * 2 - a) % MOD)) % MOD
+        d = (a * a + b * b) % MOD
+        if k & 1:
+            return (d, (c + d) % MOD)
+        else:
+            return (c, d)
+    return _fib(n)[0]
+
+def main():
+    N = int(input().strip())
+    if N == 0:
+        print(1)          # пустая сумма
+    else:
+        print(fib(N) % MOD)
+
+if __name__ == "__main__":
+    main()
