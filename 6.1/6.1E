@@ -1,0 +1,55 @@
+import sys
+import itertools
+
+def solve() -> None:
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    N = int(next(it))
+    P = int(next(it))
+    K = int(next(it))
+
+    # задержки серверов (индексы от 1 до N)
+    w = [0] + [int(next(it)) for _ in range(N)]
+
+    # маски совместимости для клиентов
+    client_mask = [0] * P
+    for j in range(P):
+        t = int(next(it))
+        mask = 0
+        for _ in range(t):
+            s = int(next(it)) - 1   # переводим в 0‑индексацию
+            mask |= 1 << s
+        client_mask[j] = mask
+
+    best_sum = None
+    best_combo = None
+
+    # перебираем все сочетания из K серверов
+    for combo in itertools.combinations(range(1, N+1), K):
+        # сумма задержек
+        s = sum(w[i] for i in combo)
+        # строим битовую маску выбранных серверов (0‑индексация)
+        mask = 0
+        for i in combo:
+            mask |= 1 << (i-1)
+        # проверяем покрытие всех клиентов
+        ok = True
+        for cm in client_mask:
+            if (mask & cm) == 0:
+                ok = False
+                break
+        if ok:
+            if best_sum is None or s < best_sum:
+                best_sum = s
+                best_combo = combo
+
+    if best_sum is None:
+        print("No solutions")
+    else:
+        print(best_sum)
+        print(' '.join(map(str, best_combo)))
+
+if __name__ == "__main__":
+    solve()
