@@ -1,0 +1,18 @@
+def hanoi4_moves(n):
+    # минимальное количество ходов для n дисков и 4 стержней
+    # формула: f(1) = 1, f(n) = min_{1 <= i < n} (2*f(i) + 2^(n-i) - 1)
+    f = [0] * (n + 1)
+    f[1] = 1
+    for i in range(2, n + 1):
+        best = 10**18
+        for j in range(1, i):
+            # j дисков на 3 стержня, остальные i-j на 4 стержня
+            # 2^(i-j) - 1 — классическая Ханойская башня для 3 стержней
+            cur = 2 * f[j] + (1 << (i - j)) - 1
+            if cur < best:
+                best = cur
+        f[i] = best
+    return f[n]
+
+n = int(input())
+print(hanoi4_moves(n))
