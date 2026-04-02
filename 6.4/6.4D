@@ -1,0 +1,28 @@
+def generate_numbers(N, K):
+    result = []
+    
+    def dfs(path, length):
+        if length == N:
+            result.append(''.join(map(str, path)))
+            return
+        
+        for next_digit in range(10):
+            if length == 0:
+                if next_digit == 0:
+                    continue
+                dfs([next_digit], 1)
+            else:
+                if abs(path[-1] - next_digit) == K:
+                    dfs(path + [next_digit], length + 1)
+    
+    dfs([], 0)
+    return result
+
+def main():
+    N, K = map(int, input().split())
+    numbers = generate_numbers(N, K)
+    for num in numbers:
+        print(num)
+
+if __name__ == "__main__":
+    main()
