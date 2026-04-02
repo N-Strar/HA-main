@@ -1,0 +1,18 @@
+def hanoi(n, start, target, aux, moves):
+    if n == 1:
+        moves.append((start, target))
+    else:
+        hanoi(n - 1, start, aux, target, moves)
+        moves.append((start, target))
+        hanoi(n - 1, aux, target, start, moves)
+
+def main():
+    n = int(input())
+    moves = []
+    hanoi(n, 1, 3, 2, moves)
+    print(len(moves))
+    for a, b in moves:
+        print(a, b)
+
+if __name__ == "__main__":
+    main()
