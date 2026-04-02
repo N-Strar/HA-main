@@ -1,0 +1,22 @@
+import heapq
+
+n = int(input())
+seqs = []
+for _ in range(n):
+    m = int(input())
+    seq = list(map(int, input().split()))
+    seqs.append(seq)
+
+result = []
+heap = []
+for i, seq in enumerate(seqs):
+    if seq:
+        heapq.heappush(heap, (seq[0], i, 0))
+
+while heap:
+    val, i, idx = heapq.heappop(heap)
+    result.append(val)
+    if idx + 1 < len(seqs[i]):
+        heapq.heappush(heap, (seqs[i][idx + 1], i, idx + 1))
+
+print(' '.join(map(str, result)))
