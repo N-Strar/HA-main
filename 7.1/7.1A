@@ -1,23 +1,22 @@
-def find_combinations(money, coins, start, current, result):
-    if money == 0:
-        result.append(current[:])
-        return
-    for i in range(start, len(coins)):
-        coin = coins[i]
-        if coin > money:
-            continue
-        current.append(coin)
-        find_combinations(money - coin, coins, i, current, result)
-        current.pop()
+import sys
 
 def main():
-    money = int(input())
-    coins = [1, 5, 10]
-    result = []
-    find_combinations(money, coins, 0, [], result)
-    print(len(result))
-    for comb in result:
-        print(len(comb), ' '.join(map(str, comb)))
+    money = int(sys.stdin.readline())
+    coins = [10, 5, 1]
+    out = [str(money // 1 + 1)]  # примерное количество? нет, нужно посчитать
+    # Сначала посчитаем количество комбинаций
+    cnt = 0
+    for c10 in range(money // 10, -1, -1):
+        rest10 = money - c10 * 10
+        cnt += rest10 // 5 + 1
+    out = [str(cnt)]
+    for c10 in range(money // 10, -1, -1):
+        rest10 = money - c10 * 10
+        for c5 in range(rest10 // 5, -1, -1):
+            c1 = rest10 - c5 * 5
+            comb = [10] * c10 + [5] * c5 + [1] * c1
+            out.append(f"{len(comb)} " + ' '.join(map(str, comb)))
+    sys.stdout.write('\n'.join(out))
 
 if __name__ == "__main__":
     main()
