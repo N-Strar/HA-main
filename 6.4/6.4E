@@ -1,0 +1,15 @@
+def generate_partitions(n, max_part, current):
+    if n == 0:
+        print('+'.join(map(str, current)))
+        return
+    for part in range(min(max_part, n), 0, -1):
+        current.append(part)
+        generate_partitions(n - part, part, current)
+        current.pop()
+
+def main():
+    n = int(input())
+    generate_partitions(n, n, [])
+
+if __name__ == "__main__":
+    main()
