@@ -1,46 +1,38 @@
 import sys
-import random
-import math
 
-def karger(n, edges):
-    parent = list(range(n))
-    rank = [0] * n
-
-    def find(x):
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    def union(x, y):
-        rx, ry = find(x), find(y)
-        if rx == ry:
-            return False
-        if rank[rx] < rank[ry]:
-            parent[rx] = ry
-        elif rank[rx] > rank[ry]:
-            parent[ry] = rx
-        else:
-            parent[ry] = rx
-            rank[rx] += 1
-        return True
-
-    e = list(edges)
-    vertex_count = n
-    while vertex_count > 2 and e:
-        idx = random.randrange(len(e))
-        u, v = e[idx]
-        if union(u, v):
-            vertex_count -= 1
-        # Удаляем ребро, чтобы не выбирать его снова
-        e.pop(idx)
-
-    # Подсчитываем рёбра между двумя компонентами
-    cnt = 0
-    for u, v in edges:
-        if find(u) != find(v):
-            cnt += 1
-    return cnt
+def stoer_wagner(n, weights):
+    # weights — матрица смежности (n x n)
+    vertices = list(range(n))
+    best = float('inf')
+    while len(vertices) > 1:
+        # фаза поиска минимального разреза
+        used = [False] * n
+        dist = [0] * n
+        prev = -1
+        for _ in range(len(vertices)):
+            # выбираем вершину с максимальным dist
+            sel = -1
+            for v in vertices:
+                if not used[v] and (sel == -1 or dist[v] > dist[sel]):
+                    sel = v
+            if sel == -1:
+                break
+            used[sel] = True
+            if prev != -1:
+                # добавляем вес в разрез
+                best = min(best, dist[sel])
+            # обновляем расстояния
+            for v in vertices:
+                dist[v] += weights[sel][v]
+            prev = sel
+        # схлопываем последние две вершины
+        s, t = prev, sel
+        # объединяем s и t
+        for v in vertices:
+            weights[s][v] += weights[t][v]
+            weights[v][s] += weights[v][t]
+        vertices.remove(t)
+    return best
 
 def main():
     data = sys.stdin.buffer.read().split()
@@ -49,22 +41,14 @@ def main():
     it = iter(data)
     n = int(next(it))
     m = int(next(it))
-    edges = [(int(next(it)) - 1, int(next(it)) - 1) for _ in range(m)]
-
-    # Если граф изначально несвязный, минимальный разрез = 0
-    # Проверим связность (можно простым BFS, но для ускорения просто запустим Каргера несколько раз)
-    # Но проще: если m < n-1, то граф точно несвязный → ответ 0
-    if m < n - 1:
-        print(0)
-        return
-
-    iterations = int(n * n * math.log(n)) + 10
-    best = m
-    for _ in range(iterations):
-        res = karger(n, edges)
-        if res < best:
-            best = res
-    print(best)
+    # матрица смежности
+    w = [[0] * n for _ in range(n)]
+    for _ in range(m):
+        u = int(next(it)) - 1
+        v = int(next(it)) - 1
+        w[u][v] += 1
+        w[v][u] += 1
+    print(stoer_wagner(n, w))
 
 if __name__ == "__main__":
     main()
