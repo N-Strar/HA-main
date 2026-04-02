@@ -1,0 +1,71 @@
+K, S = map(int, input().split())
+
+def build_min(K, S):
+    half = (K + 1) // 2
+    res = [0] * half
+    rem = S
+    for i in range(half):
+        # коэффициент для текущей позиции (2 для парных, 1 для центральной)
+        if i == half - 1 and K % 2 == 1:
+            factor = 1
+        else:
+            factor = 2
+        left = half - i - 1  # сколько позиций осталось после i в первой половине
+        low = 1 if i == 0 else 0
+        for d in range(low, 10):
+            if d * factor > rem:
+                continue
+            rest = rem - d * factor
+            # максимальная сумма для оставшихся позиций
+            if left == 0:
+                max_rest = 0
+            else:
+                if K % 2 == 1 and i < half - 1:
+                    # среди оставшихся есть центральная позиция (вклад 1 вместо 2)
+                    max_rest = 9 * 2 * left - 9
+                else:
+                    max_rest = 9 * 2 * left
+            if rest <= max_rest:
+                res[i] = d
+                rem = rest
+                break
+    # строим палиндром
+    if K % 2 == 0:
+        full = res + res[::-1]
+    else:
+        full = res + res[-2::-1]
+    return ''.join(map(str, full))
+
+def build_max(K, S):
+    half = (K + 1) // 2
+    res = [0] * half
+    rem = S
+    for i in range(half):
+        if i == half - 1 and K % 2 == 1:
+            factor = 1
+        else:
+            factor = 2
+        left = half - i - 1
+        low = 1 if i == 0 else 0
+        for d in range(9, low - 1, -1):
+            if d * factor > rem:
+                continue
+            rest = rem - d * factor
+            if left == 0:
+                max_rest = 0
+            else:
+                if K % 2 == 1 and i < half - 1:
+                    max_rest = 9 * 2 * left - 9
+                else:
+                    max_rest = 9 * 2 * left
+            if rest <= max_rest:
+                res[i] = d
+                rem = rest
+                break
+    if K % 2 == 0:
+        full = res + res[::-1]
+    else:
+        full = res + res[-2::-1]
+    return ''.join(map(str, full))
+
+print(build_min(K, S), build_max(K, S))
