@@ -27,5 +27,5 @@ def solve():
     
     sys.stdout.write("\n".join(results))
 
-if name == "main":
+if __name__ == "__main__":
     solve()
