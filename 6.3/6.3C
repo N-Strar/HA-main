@@ -1,27 +1,19 @@
-MOD = 1_000_000_007
+import sys
 
-def fib(n: int) -> int:
-    """Возвращает n-е число Фибоначчи (F0 = 0, F1 = 1) по модулю MOD."""
-    if n == 0:
-        return 0
-    def _fib(k: int):
-        if k == 0:
-            return (0, 1)
-        a, b = _fib(k >> 1)
-        c = (a * ((b * 2 - a) % MOD)) % MOD
-        d = (a * a + b * b) % MOD
-        if k & 1:
-            return (d, (c + d) % MOD)
-        else:
-            return (c, d)
-    return _fib(n)[0]
-
-def main():
-    N = int(input().strip())
-    if N == 0:
-        print(1)          # пустая сумма
-    else:
-        print(fib(N) % MOD)
+def main() -> None:
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        return
+    it = iter(data)
+    n = int(next(it))
+    k = int(next(it))
+    coords = [int(next(it)) for _ in range(n)]
+    coords.sort()
+    ans = k                     # самый левый – только к потолку
+    for i in range(1, n):
+        dist = coords[i] - coords[i - 1]
+        ans += min(k, dist * dist)
+    print(ans)
 
 if __name__ == "__main__":
     main()
