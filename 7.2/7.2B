@@ -1,0 +1,11 @@
+n, S = map(int, input().split())
+prices = [int(input()) for _ in range(n)]
+prices.sort()
+cnt = 0
+for p in prices:
+    if p <= S:
+        S -= p
+        cnt += 1
+    else:
+        break
+print(cnt)
