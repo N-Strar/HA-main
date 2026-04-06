@@ -1,0 +1,19 @@
+n, W = map(int, input().split())
+items = []
+for _ in range(n):
+    c, w = map(int, input().split())
+    items.append((c / w, c, w))   # (ценность за единицу, цена, вес)
+
+items.sort(reverse=True)          # по убыванию ценности за единицу
+
+total_value = 0.0
+remaining = W
+
+for value_per_unit, price, weight in items:
+    take = min(weight, remaining)
+    total_value += take * value_per_unit
+    remaining -= take
+    if remaining == 0:
+        break
+
+print(f"{total_value:.3f}")
