@@ -1,0 +1,15 @@
+n = int(input())
+items = []
+for _ in range(n):
+    price, discount = map(int, input().split())
+    cost = price - discount
+    items.append((cost, discount))
+S = int(input())
+
+dp = [0] * (S + 1)
+
+for cost, discount in items:
+    for s in range(S, cost - 1, -1):
+        dp[s] = max(dp[s], dp[s - cost] + discount)
+
+print(max(dp))
