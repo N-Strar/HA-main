@@ -1,0 +1,37 @@
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        return
+    it = iter(data)
+    n = int(next(it))
+    T = int(next(it))
+
+    processes = []
+    for _ in range(n):
+        w = int(next(it))
+        c = int(next(it))
+        processes.append((w, c))
+
+    # Сортируем по убыванию эффективности (c / w)
+    processes.sort(key=lambda x: x[1] / x[0], reverse=True)
+
+    total_time = 0
+    total_profit = 0.0
+
+    for w, c in processes:
+        if total_time + w <= T:
+            total_time += w
+            total_profit += c
+        else:
+            remaining = T - total_time
+            if remaining > 0:
+                total_profit += c * (remaining / w)
+            break
+
+    # Вывод с требуемой точностью
+    print(f"{total_profit:.6f}")
+
+if __name__ == "__main__":
+    main()
