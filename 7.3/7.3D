@@ -1,0 +1,19 @@
+n = int(input())
+tasks = []
+for _ in range(n):
+    d, p = map(int, input().split())
+    tasks.append((d, p))
+
+# сортируем по дедлайну
+tasks.sort()
+
+# max-heap для прибылей выбранных задач
+import heapq
+heap = []
+for d, p in tasks:
+    heapq.heappush(heap, p)       # добавляем прибыль
+    # если задач больше, чем дедлайн, удаляем самую маленькую прибыль
+    if len(heap) > d:
+        heapq.heappop(heap)
+
+print(sum(heap))
