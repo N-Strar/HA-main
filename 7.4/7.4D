@@ -1,0 +1,27 @@
+def solve():
+    n, k = map(int, input().split())
+    points = list(map(int, input().split()))
+    points.sort()
+
+    # Бинарный поиск по ответу
+    left, right = 0.0, points[-1] - points[0]
+    for _ in range(60):  # достаточно для точности 1e-9
+        mid = (left + right) / 2
+        # Проверяем, можно ли покрыть все точки k отрезками длины 2*mid
+        cnt = 1
+        last_covered = points[0] + 2 * mid
+        for x in points[1:]:
+            if x > last_covered:
+                cnt += 1
+                last_covered = x + 2 * mid
+                if cnt > k:
+                    break
+        if cnt <= k:
+            right = mid
+        else:
+            left = mid
+
+    print(f"{right:.6f}")
+
+if __name__ == "__main__":
+    solve()
