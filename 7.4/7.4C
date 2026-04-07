@@ -1,1 +1,26 @@
-AS
+n, k = map(int, input().split())
+points = list(map(int, input().split()))
+points.sort()
+
+# Если отрезков больше или равно количеству точек,
+# можно каждую точку покрыть отдельным отрезком нулевой длины
+if k >= n:
+    print(0)
+    exit()
+
+# Разности между соседними точками
+gaps = []
+for i in range(1, n):
+    gaps.append(points[i] - points[i - 1])
+
+# Сортируем разности по убыванию
+gaps.sort(reverse=True)
+
+# Общая длина покрытия без разрезов
+total_len = points[-1] - points[0]
+
+# Убираем k-1 самых больших разрывов
+for i in range(k - 1):
+    total_len -= gaps[i]
+
+print(total_len)
