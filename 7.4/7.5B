@@ -1,0 +1,13 @@
+n, L = map(int, input().split())
+points = list(map(int, input().split()))
+points.sort()
+
+cnt = 0
+i = 0
+while i < n:
+    cnt += 1
+    cover_until = points[i] + L
+    while i < n and points[i] <= cover_until:
+        i += 1
+
+print(cnt)
