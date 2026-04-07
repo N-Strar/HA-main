@@ -1,0 +1,7 @@
+n = int(input())
+prices = list(map(int, input().split()))
+clicks = list(map(int, input().split()))
+prices.sort(reverse=True)
+clicks.sort(reverse=True)
+ans = sum(p * c for p, c in zip(prices, clicks))
+print(ans)
