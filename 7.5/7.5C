@@ -1,0 +1,7 @@
+n, k = map(int, input().split())
+
+base = n // k
+rem = n % k
+
+result = [base + 1] * rem + [base] * (k - rem)
+print(' '.join(map(str, result)))
