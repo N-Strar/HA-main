@@ -1,0 +1,17 @@
+n, k = map(int, input().split())
+
+# Минимальная сумма для k строго возрастающих чисел: 1,2,...,k
+base_sum = k * (k + 1) // 2
+remaining = n - base_sum
+
+# Равномерно увеличиваем числа
+add = remaining // k
+rem = remaining % k
+
+# Начинаем с 1,2,...,k
+result = [i + add for i in range(1, k + 1)]
+# Добавляем остаток к последним rem числам
+for i in range(k - rem, k):
+    result[i] += 1
+
+print(' '.join(map(str, result)))
