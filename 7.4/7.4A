@@ -1,0 +1,17 @@
+n = int(input())
+segments = []
+for _ in range(n):
+    l, r = map(int, input().split())
+    segments.append((l, r))
+
+segments.sort(key=lambda x: x[1])
+
+points = []
+last = -10**18
+for l, r in segments:
+    if l > last:
+        points.append(r)
+        last = r
+
+print(len(points))
+print(' '.join(map(str, points)))
