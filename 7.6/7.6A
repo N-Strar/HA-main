@@ -1,0 +1,17 @@
+from functools import cmp_to_key
+
+def cmp(a, b):
+    # Сравниваем строки a+b и b+a
+    if a + b > b + a:
+        return -1
+    elif a + b < b + a:
+        return 1
+    else:
+        return 0
+
+n = int(input())
+nums = input().split()
+
+nums.sort(key=cmp_to_key(cmp))
+
+print(''.join(nums))
