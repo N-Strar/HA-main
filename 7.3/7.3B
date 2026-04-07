@@ -1,0 +1,22 @@
+n, k, w = map(int, input().split())
+offers = []
+for _ in range(k):
+    c, wi = map(int, input().split())
+    offers.append((c, wi))
+
+# Сортируем рекламодателей по убыванию оплаты за неделю
+offers.sort(reverse=True)
+
+# Жадно набираем рекламодателей, пока есть свободные места
+total_profit = 0
+used_weeks = 0
+max_slots = n * w
+
+for c, wi in offers:
+    if used_weeks >= max_slots:
+        break
+    take = min(wi, max_slots - used_weeks)
+    total_profit += take * c
+    used_weeks += take
+
+print(total_profit)
