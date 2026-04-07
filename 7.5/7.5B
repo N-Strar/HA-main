@@ -1,0 +1,10 @@
+n = int(input())
+powers = []
+i = 0
+while n > 0:
+    if n & 1:
+        powers.append(i)
+    n >>= 1
+    i += 1
+print(len(powers))
+print(' '.join(map(str, powers)))
